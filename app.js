@@ -1,16 +1,16 @@
-if(process.env.Node_ENV != "production") {
-  require('dotenv').config();
+if (process.env.Node_ENV != "production") {
+  require("dotenv").config();
 }
-const express = require('express');
+const express = require("express");
 const app = express();
 const port = 3000;
 const mongoose = require("mongoose");
 const path = require("path");
-const methodOverride = require('method-override');
+const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError.js");
 const session = require("express-session");
-const MongoStore = require('connect-mongo');
+const MongoStore = require("connect-mongo");
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
@@ -27,7 +27,7 @@ main()
   .then(() => {
     console.log("Connection Successful");
   })
-  .catch(err => {
+  .catch((err) => {
     console.log(err);
   });
 
@@ -42,21 +42,21 @@ app.set("views", path.join(__dirname, "views"));
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
-app.use(methodOverride('_method'));
+app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "assets")));
 app.use(express.static(path.join(__dirname, "public")));
 
 const store = MongoStore.create({
-  mongoUrl : dbUrl,
-  crypto : {
+  mongoUrl: dbUrl,
+  crypto: {
     secret: process.env.SECRET,
   },
   touchAfter: 24 * 3600,
 });
 
-store.on("error", ()=>{
-  console.log("Error in Mongo Session Store", err)
-})
+store.on("error", () => {
+  console.log("Error in Mongo Session Store", err);
+});
 
 const sessionOptions = {
   store,
@@ -66,8 +66,8 @@ const sessionOptions = {
   cookie: {
     expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
     maxAge: 7 * 24 * 60 * 60 * 1000,
-    httpOnly: true
-  }
+    httpOnly: true,
+  },
 };
 
 app.use(session(sessionOptions));
@@ -79,7 +79,6 @@ passport.use(new LocalStrategy(User.authenticate()));
 
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
-
 
 // Flash Middleware
 app.use((req, res, next) => {
